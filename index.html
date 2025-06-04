@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Template Laporan Keuangan Otomatis untuk Jasa Konstruksi</title>
+<style>
+  :root {
+    --color-primary: #1e90ff;
+    --color-primary-dark: #186fd3;
+    --color-secondary: #ff6f3c;
+    --color-bg: #f0f4f8;
+    --color-text: #2d3a56;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  body {
+    margin:0; padding:0; font-family: var(--font-family);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+  }
+  header {
+    background: var(--color-primary);
+    color: white;
+    padding: 1rem 2rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: 0.05em;
+  }
+  main {
+    flex: 1;
+    padding: 1rem;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+  nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  nav button {
+    background: var(--color-primary);
+    border: none;
+    color: white;
+    padding: 0.5rem 1.3rem;
+    margin: 0.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: background-color 0.3s ease;
+  }
+  nav button:hover,
+  nav button.active {
+    background: var(--color-primary-dark);
+  }
+  section {
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 7px;
+    box-shadow: 0 0 15px rgba(45,58,86,0.1);
+    display: none;
+  }
+  section.active {
+    display: block;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+  }
+  table thead tr {
+    background: var(--color-primary);
+    color: white;
+  }
+  table th, table td {
+    border: 1px solid #ddd;
+    padding: 0.5rem 0.8rem;
+    text-align: left;
+  }
+  table th {
+    user-select: none;
+  }
+  input[type=date], input[type=text], input[type=number], select {
+    width: 100%;
+    padding: 0.3rem 0.6rem;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #bbb;
+    transition: border-color 0.3s ease;
+    font-size: 0.95rem;
+  }
+  input[type=date]:focus,
+  input[type=text]:focus,
+  input[type=number]:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+  }
+  .small-number {
+    width: 110px;
+    text-align: right;
+  }
+  .right-align {
+    text-align: right;
+  }
+  .text-primary {
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+  .text-secondary {
+    color: var(--color-secondary);
+  }
+  .add-row-btn {
+    background: var(--color-secondary);
+    color: white;
+    border: none;
+    padding: 0.45rem 1rem;
+    border-radius: 5px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 0.6rem;
+    font-size: 1rem;
+  }
+  .add-row-btn:hover {
+    background: #d75223;
+  }
+  footer {
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  .scrolltable {
+    overflow-x: auto;
+  }
+  .info-text {
+    font-size: 0.85rem;
+    color: #555;
+    margin-top: -1rem;
+    margin-bottom: 1rem;
+  }
+</style>
+</head>
+<body>
+<header>Template Laporan Keuangan Otomatis untuk Jasa Konstruksi</header>
+<main>
+<nav aria-label="Navigasi laporan">
+  <button class="tab-btn active" data-target="jurnal" type="button">Jurnal Umum</button>
+  <button class="tab-btn" data-target="laba-rugi" type="button">Laporan Laba Rugi</button>
+  <button class="tab-btn" data-target="perubahan-ekuitas" type="button">Laporan Perubahan Ekuitas</button>
+  <button class="tab-btn" data-target="arus-kas" type="button">Laporan Arus Kas</button>
+  <button class="tab-btn" data-target="neraca" type="button">Neraca</button>
+</nav>
+
+<section id="jurnal" class="active" aria-label="Jurnal Umum">
+  <h2>Jurnal Umum - Pencatatan Transaksi Konstruksi</h2>
+  <div class="scrolltable">
+  <table id="table-jurnal" aria-describedby="desc-jurnal">
+    <thead>
+      <tr>
+        <th>Tanggal</th>
+        <th>Proyek</th>
+        <th>Keterangan</th>
+        <th>Akun</th>
+        <th>Debit (Rp)</th>
+        <th>Kredit (Rp)</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tbody-jurnal">
+      <!-- Baris jurnal akan ditambahkan secara otomatis -->
+    </tbody>
+  </table>
+  </div>
+  <button class="add-row-btn" id="add-jurnal-row">Tambah Baris</button>
+  <p id="desc-jurnal" class="info-text">Masukkan transaksi harian perusahaan konstruksi Anda dengan memilih proyek terkait. Pilih akun yang sesuai dengan aktivitas konstruksi (pendapatan proyek, beban subkon, bahan, etc.). Pastikan total debit dan kredit seimbang.</p>
+  <p style="color: var(--color-secondary);" id="balance-warning"></p>
+</section>
+
+<section id="laba-rugi" aria-label="Laporan Laba Rugi">
+  <h2>Laporan Laba Rugi - Khusus Konstruksi</h2>
+  <table aria-describedby="desc-lr">
+    <thead>
+      <tr>
+        <th>Deskripsi</th>
+        <th class="right-align">Jumlah (Rp)</th>
+      </tr>
+    </thead>
+    <tbody id="tbody-laba-rugi">
+      <tr><td class="text-primary">Pendapatan Proyek</td><td class="right-align" id="lr-pendapatan">0</td></tr>
+      <tr><td class="text-secondary">Beban Proyek (Subkon, Material, Gaji, dll.)</td><td class="right-align" id="lr-beban">0</td></tr>
+      <tr style="border-top: 2px solid var(--color-primary); font-weight: 700;"><td>Laba Bersih</td><td class="right-align" id="lr-laba-bersih">0</td></tr>
+    </tbody>
+  </table>
+  <p id="desc-lr" class="info-text">Laporan ini menampilkan pendapatan dari proyek dan beban terkait untuk menghitung laba bersih.</p>
+</section>
+
+<section id="perubahan-ekuitas" aria-label="Laporan Perubahan Ekuitas">
+  <h2>Laporan Perubahan Ekuitas</h2>
+  <table aria-describedby="desc-pe">
+    <thead>
+      <tr>
+        <th>Deskripsi</th>
+        <th class="right-align">Jumlah (Rp)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Modal Awal</td><td class="right-align" id="pe-modal-awal">0</td></tr>
+      <tr><td>Laba Bersih</td><td class="right-align" id="pe-laba-bersih">0</td></tr>
+      <tr><td>Penambahan Modal</td><td><input id="penambahan-modal" type="number" min="0" value="0" step="1000" /></td></tr>
+      <tr><td>Dividen</td><td><input id="dividen" type="number" min="0" value="0" step="1000" /></td></tr>
+      <tr style="border-top: 2px solid var(--color-primary); font-weight: 700;"><td>Modal Akhir</td><td class="right-align" id="pe-modal-akhir">0</td></tr>
+    </tbody>
+  </table>
+  <p id="desc-pe" class="info-text">Perubahan modal perusahaan otomatis dihitung berdasarkan laba bersih dan input modal/dividen.</p>
+</section>
+
+<section id="arus-kas" aria-label="Laporan Arus Kas">
+  <h2>Laporan Arus Kas</h2>
+  <table aria-describedby="desc-ak">
+    <thead>
+      <tr>
+        <th>Aktivitas</th>
+        <th class="right-align">Jumlah (Rp)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="text-primary">Arus Kas dari Aktivitas Operasi</td><td class="right-align" id="ak-operasi">0</td></tr>
+      <tr><td class="text-primary">Arus Kas dari Aktivitas Investasi</td><td class="right-align" id="ak-investasi">0</td></tr>
+      <tr><td class="text-primary">Arus Kas dari Aktivitas Pendanaan</td><td class="right-align" id="ak-pendanaan">0</td></tr>
+      <tr style="border-top: 2px solid var(--color-primary); font-weight: 700;"><td>Total Arus Kas</td><td class="right-align" id="ak-total">0</td></tr>
+    </tbody>
+  </table>
+  <p id="desc-ak" class="info-text">Menghitung kas masuk dan keluar dari aktivitas operasi, investasi, dan pendanaan.</p>
+</section>
+
+<section id="neraca" aria-label="Neraca">
+  <h2>Neraca - Posisi Keuangan Perusahaan Konstruksi</h2>
+  <table aria-describedby="desc-neraca">
+    <thead>
+      <tr>
+        <th>Akun</th>
+        <th class="right-align">Jumlah (Rp)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="text-primary" colspan="2"><strong>Aset</strong></td></tr>
+      <tr><td>- Aset Lancar</td><td class="right-align" id="na-aset-lancar">0</td></tr>
+      <tr><td>- Aset Tetap</td><td class="right-align" id="na-aset-tetap">0</td></tr>
+      <tr style="border-top: 1px solid #ccc; font-weight: 700;"><td>Total Aset</td><td class="right-align" id="na-total-aset">0</td></tr>
+      <tr></tr>
+      <tr><td class="text-secondary" colspan="2"><strong>Kewajiban</strong></td></tr>
+      <tr><td>- Kewajiban Jangka Pendek</td><td class="right-align" id="na-kewajiban-jangka-pendek">0</td></tr>
+      <tr><td>- Kewajiban Jangka Panjang</td><td class="right-align" id="na-kewajiban-jangka-panjang">0</td></tr>
+      <tr style="border-top: 1px solid #ccc; font-weight: 700;"><td>Total Kewajiban</td><td class="right-align" id="na-total-kewajiban">0</td></tr>
+      <tr></tr>
+      <tr><td class="text-primary" colspan="2"><strong>Ekuitas</strong></td></tr>
+      <tr><td>- Modal</td><td class="right-align" id="na-ekuitas-modal">0</td></tr>
+      <tr><td>- Laba Ditahan</td><td class="right-align" id="na-ekuitas-laba-ditahan">0</td></tr>
+      <tr style="border-top: 1px solid #ccc; font-weight: 700;"><td>Total Ekuitas</td><td class="right-align" id="na-total-ekuitas">0</td></tr>
+      <tr style="border-top: 3px solid var(--color-primary); font-weight: 800; font-size: 1rem;"><td>Total Kewajiban dan Ekuitas</td><td class="right-align" id="na-total-kewajiban-ekuitas">0</td></tr>
+    </tbody>
+  </table>
+  <p id="desc-neraca" class="info-text">Neraca menunjukkan posisi keuangan akhir periode.</p>
+</section>
+</main>
+<footer>© 2024 Template Laporan Keuangan Jasa Konstruksi Otomatis</footer>
+
+<script>
+(() => {
+  // Accounts specialized for jasa konstruksi (construction service)
+  // Added Proyek column for project tracking
+  const accounts = [
+    // Aset Lancar
+    {name:"Kas", categoryNR:"Aset Lancar", cashFlow:"Operasi"},
+    {name:"Piutang Usaha", categoryNR:"Aset Lancar", cashFlow:"Operasi"},
+    {name:"Persediaan Material", categoryNR:"Aset Lancar", cashFlow:"Operasi"},
+    {name:"Persediaan Alat", categoryNR:"Aset Lancar", cashFlow:"Operasi"},
+    // Aset Tetap
+    {name:"Aset Tetap", categoryNR:"Aset Tetap", cashFlow:"Investasi"},
+    {name:"Akumulasi Penyusutan", categoryNR:"Aset Tetap", cashFlow:"Investasi"},
+    // Kewajiban
+    {name:"Hutang Usaha", categoryNR:"Kewajiban Jangka Pendek", cashFlow:"Operasi"},
+    {name:"Hutang Bank Jangka Panjang", categoryNR:"Kewajiban Jangka Panjang", cashFlow:"Pendanaan"},
+    // Ekuitas
+    {name:"Modal Disetor", categoryNR:"Ekuitas Modal", cashFlow:null},
+    {name:"Laba Ditahan", categoryNR:"Laba Ditahan", cashFlow:null},
+    // Pendapatan
+    {name:"Pendapatan Proyek", categoryLR:"Pendapatan", cashFlow:"Operasi"},
+    {name:"Pendapatan Lainnya", categoryLR:"Pendapatan", cashFlow:"Operasi"},
+    // Beban (Konstruksi)
+    {name:"Beban Subkontrak", categoryLR:"Beban", cashFlow:"Operasi"},
+    {name:"Beban Material", categoryLR:"Beban", cashFlow:"Operasi"},
+    {name:"Beban Tenaga Kerja", categoryLR:"Beban", cashFlow:"Operasi"},
+    {name:"Beban Sewa Alat", categoryLR:"Beban", cashFlow:"Operasi"},
+    {name:"Beban Listrik & Air", categoryLR:"Beban", cashFlow:"Operasi"},
+    {name:"Beban Administrasi", categoryLR:"Beban", cashFlow:"Operasi"},
+  ];
+
+  const projects = [
+    "Proyek A",
+    "Proyek B",
+    "Proyek C",
+    "Umum / Non Proyek"
+  ];
+
+  function getAccountByName(name) {
+    return accounts.find(acc => acc.name === name);
+  }
+
+  function buildAccountOptions() {
+    return accounts.map(acc => `<option value="${acc.name}">${acc.name}</option>`).join('');
+  }
+
+  function buildProjectOptions() {
+    return projects.map(p => `<option value="${p}">${p}</option>`).join('');
+  }
+
+  function createJournalRow() {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="date" class="tanggal" required></td>
+      <td><select class="proyek" required>${buildProjectOptions()}</select></td>
+      <td><input type="text" class="keterangan" placeholder="Uraian transaksi" required></td>
+      <td><select class="akun" required>${buildAccountOptions()}</select></td>
+      <td><input type="number" class="debit" min="0" step="1000" value="0" autocomplete="off"></td>
+      <td><input type="number" class="kredit" min="0" step="1000" value="0" autocomplete="off"></td>
+      <td><button class="delete-row" aria-label="Hapus baris">×</button></td>
+    `;
+    return tr;
+  }
+
+  const tbodyJurnal = document.getElementById('tbody-jurnal');
+  const btnAddJurnalRow = document.getElementById('add-jurnal-row');
+  const balanceWarning = document.getElementById('balance-warning');
+
+  for (let i=0; i<5; i++) tbodyJurnal.appendChild(createJournalRow());
+
+  btnAddJurnalRow.addEventListener('click', () => {
+    tbodyJurnal.appendChild(createJournalRow());
+  });
+
+  tbodyJurnal.addEventListener('click', (e) => {
+    if (e.target.classList.contains('delete-row')) {
+      const tr = e.target.closest('tr');
+      if (tbodyJurnal.rows.length > 1) {
+        tr.remove();
+        calcAll();
+      }
+    }
+  });
+
+  tbodyJurnal.addEventListener('input', (e) => {
+    if (e.target.classList.contains('debit')) {
+      const tr = e.target.closest('tr');
+      if (parseFloat(e.target.value) > 0) tr.querySelector('.kredit').value = 0;
+    }
+    if (e.target.classList.contains('kredit')) {
+      const tr = e.target.closest('tr');
+      if (parseFloat(e.target.value) > 0) tr.querySelector('.debit').value = 0;
+    }
+    calcAll();
+  });
+
+  tbodyJurnal.addEventListener('change', (e) => {
+    if (e.target.classList.contains('akun') || e.target.classList.contains('proyek')) {
+      calcAll();
+    }
+  });
+
+  document.getElementById('penambahan-modal').addEventListener('input', calcAll);
+  document.getElementById('dividen').addEventListener('input', calcAll);
+
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const sections = document.querySelectorAll('section');
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      sections.forEach(s => s.classList.remove('active'));
+      document.getElementById(btn.getAttribute('data-target')).classList.add('active');
+    });
+  });
+
+  function calcAll() {
+    const entries = [];
+    for (const row of tbodyJurnal.querySelectorAll('tr')) {
+      const tanggal = row.querySelector('.tanggal').value;
+      const proyek = row.querySelector('.proyek').value;
+      const keterangan = row.querySelector('.keterangan').value.trim();
+      const akun = row.querySelector('.akun').value;
+      const debit = parseFloat(row.querySelector('.debit').value) || 0;
+      const kredit = parseFloat(row.querySelector('.kredit').value) || 0;
+      if (tanggal && akun && (debit > 0 || kredit > 0)) {
+        entries.push({tanggal, proyek, keterangan, akun, debit, kredit});
+      }
+    }
+
+    const totalDebit = entries.reduce((sum, e) => sum + e.debit, 0);
+    const totalKredit = entries.reduce((sum, e) => sum + e.kredit, 0);
+    if (totalDebit !== totalKredit) {
+      balanceWarning.textContent = `Peringatan: Total Debit (Rp ${totalDebit.toLocaleString()}) tidak sama dengan Total Kredit (Rp ${totalKredit.toLocaleString()})!`;
+    } else {
+      balanceWarning.textContent = '';
+    }
+
+    // Laporan Laba Rugi, khusus hitung pendapatan dan beban proyek
+    let totalPendapatan = 0;
+    let totalBeban = 0;
+    for (const e of entries) {
+      const acc = getAccountByName(e.akun);
+      if (!acc) continue;
+      if (acc.categoryLR === "Pendapatan") {
+        totalPendapatan += e.kredit - e.debit;
+      } else if (acc.categoryLR === "Beban") {
+        totalBeban += e.debit - e.kredit;
+      }
+    }
+    const labaBersih = totalPendapatan - totalBeban;
+
+    document.getElementById('lr-pendapatan').textContent = totalPendapatan.toLocaleString('id-ID');
+    document.getElementById('lr-beban').textContent = totalBeban.toLocaleString('id-ID');
+    document.getElementById('lr-laba-bersih').textContent = labaBersih.toLocaleString('id-ID');
+
+    // Perubahan Ekuitas
+    let saldoModalAwal = 0;
+    for (const e of entries) {
+      if (e.akun === "Modal Disetor") {
+        saldoModalAwal += e.debit - e.kredit;
+      }
+    }
+    document.getElementById('pe-modal-awal').textContent = saldoModalAwal.toLocaleString('id-ID');
+    document.getElementById('pe-laba-bersih').textContent = labaBersih.toLocaleString('id-ID');
+
+    const penambahanModal = parseFloat(document.getElementById('penambahan-modal').value) || 0;
+    const dividen = parseFloat(document.getElementById('dividen').value) || 0;
+    const modalAkhir = saldoModalAwal + labaBersih + penambahanModal - dividen;
+    document.getElementById('pe-modal-akhir').textContent = modalAkhir.toLocaleString('id-ID');
+
+    // Neraca
+    function saldoAkun(nama) {
+      let d = 0, k = 0;
+      for (const e of entries) {
+        if (e.akun === nama) {
+          d += e.debit;
+          k += e.kredit;
+        }
+      }
+      return d - k;
+    }
+    let asetLancar = 0;
+    ["Kas", "Piutang Usaha", "Persediaan Material", "Persediaan Alat"].forEach(nama => {
+      const s = saldoAkun(nama);
+      if (s > 0) asetLancar += s;
+    });
+    const asetTetapSaldo = saldoAkun("Aset Tetap");
+    const akumulasiPenyusutan = saldoAkun("Akumulasi Penyusutan");
+    let asetTetap = asetTetapSaldo - akumulasiPenyusutan;
+
+    const kewajibanJP = saldoAkun("Hutang Usaha");
+    const kewajibanJPP = saldoAkun("Hutang Bank Jangka Panjang");
+
+    const ekuitasModal = saldoModalAwal + penambahanModal;
+    const labaDitahan = saldoAkun("Laba Ditahan") + labaBersih - dividen;
+
+    const totalAset = asetLancar + asetTetap;
+    const totalKewajiban = kewajibanJP + kewajibanJPP;
+    const totalEkuitas = ekuitasModal + labaDitahan;
+    const totalKewajibanEkuitas = totalKewajiban + totalEkuitas;
+
+    document.getElementById('na-aset-lancar').textContent = asetLancar.toLocaleString('id-ID');
+    document.getElementById('na-aset-tetap').textContent = asetTetap.toLocaleString('id-ID');
+    document.getElementById('na-total-aset').textContent = totalAset.toLocaleString('id-ID');
+    document.getElementById('na-kewajiban-jangka-pendek').textContent = kewajibanJP.toLocaleString('id-ID');
+    document.getElementById('na-kewajiban-jangka-panjang').textContent = kewajibanJPP.toLocaleString('id-ID');
+    document.getElementById('na-total-kewajiban').textContent = totalKewajiban.toLocaleString('id-ID');
+    document.getElementById('na-ekuitas-modal').textContent = ekuitasModal.toLocaleString('id-ID');
+    document.getElementById('na-ekuitas-laba-ditahan').textContent = labaDitahan.toLocaleString('id-ID');
+    document.getElementById('na-total-ekuitas').textContent = totalEkuitas.toLocaleString('id-ID');
+    document.getElementById('na-total-kewajiban-ekuitas').textContent = totalKewajibanEkuitas.toLocaleString('id-ID');
+
+    // Laporan Arus Kas (direct method simplified)
+    const kasSaldo = saldoAkun("Kas");
+    const investasi = saldoAkun("Aset Tetap") + saldoAkun("Akumulasi Penyusutan");
+    const pendanaan = saldoAkun("Modal Disetor") + saldoAkun("Hutang Bank Jangka Panjang");
+    const totalArusKas = kasSaldo + investasi + pendanaan;
+
+    document.getElementById('ak-operasi').textContent = kasSaldo.toLocaleString('id-ID');
+    document.getElementById('ak-investasi').textContent = investasi.toLocaleString('id-ID');
+    document.getElementById('ak-pendanaan').textContent = pendanaan.toLocaleString('id-ID');
+    document.getElementById('ak-total').textContent = totalArusKas.toLocaleString('id-ID');
+  }
+
+  calcAll();
+
+})();
+</script>
+</body>
+</html>
+
